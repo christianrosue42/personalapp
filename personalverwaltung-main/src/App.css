@@ -1,0 +1,129 @@
+.card-hover:hover {
+    /* add border and change border color to active*/
+    border: 1px solid rgb(13, 202, 240);
+    transform: scale(1.05); /* This will slightly enlarge the card */
+    transition: transform 0.3s ease-in-out; /* This will animate the transformation */
+  }
+
+  .react-icons {
+    margin-right: 5px;
+  }
+
+
+
+  body {
+    background: radial-gradient(circle, rgba(255,193,7,1) 0%, rgba(253,126,20,1) 100%);
+  }
+
+  
+  main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  footer {
+    margin-top: auto 0;
+  }
+
+  .footer-container {
+    margin-top: 20px;
+  }
+
+  .footer-content {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .social-icons {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .social-icons p:hover {
+    color: #FFC107;
+  }
+
+  /* line effect on hover */ 
+.nav-element {
+  margin: 0 10px;
+  text-decoration: none;
+  color: #F8F9FA;
+  display: inline-block;
+  position: relative;
+}
+
+.nav-element:hover {
+  color: #FFC107;
+}
+
+.nav-element::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: #FFC107;
+  transform-origin: bottom right;
+  transition: transform 0.45s ease-out;
+}
+
+.nav-element:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+.nav-element::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 2px;
+  top: 0;
+  right: 0;
+  background-color: #FFC107;
+  transform-origin: top left;
+  transition: transform 0.45s ease-out;
+}
+
+.nav-element:hover::before {
+  transform: scaleX(1);
+  transform-origin: top right;
+}
+
+.info {
+  color: rgb(13, 202, 240);
+}
+
+/* style scroll bar */
+/* This will style the scrollbar for Chrome, Safari and Opera */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F8F9FA;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #6C757D;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+} 
+
+/* This will style the scrollbar for Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #6C757D #F8F9FA;
+}
