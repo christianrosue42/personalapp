@@ -13,7 +13,7 @@ import { IconContext } from "react-icons";
 
 /**
  * @see ParentComponent.js
- * Function to create a new user. It uses a form from react-bootstrap to provide a fields for the user details.
+ * Function to create a new user. It uses a form from react-bootstrap to provide a field for the user details.
  * It takes in an employees array and a setEmployees function as props, maintains its own state for the new user,
  * and calls the setEmployees function with the new user when the "Add Employee" button is clicked.
  * 
