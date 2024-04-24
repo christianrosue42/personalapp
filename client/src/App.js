@@ -58,7 +58,7 @@ const App = () => {
                 style={{ width: '100%', opacity: '50%' }}
                 >
                     <FaRobot style={{ width: '50px', height: 'auto' }} className="react-icons"/>    
-                    <h1 className=''>PerVer - Die App für Personalverwaltung!!!!</h1>
+                    <h1 className=''>RoboHub - Die App für Personalverwaltung</h1>
                 </div>
                 <ParentComponent searchString={searchString}/>                        
             </main>
