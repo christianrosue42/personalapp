@@ -7,8 +7,14 @@ var cors = require('cors');
 
 // Eine Referenz zu der Datei im controllers-Ordner
 //var apiController = require('./controllers/apiController');
-//var mongoose = require('mongoose');
-require('dotenv').config({ path: '../.env' });
+
+require('dotenv').config();
+
+// use AWS SDK to interact with DynamoDB
+const AWS = require('aws-sdk');
+
+// create a DynamoDB service object
+const ddb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
 
 app.use(cors())
 
