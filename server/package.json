@@ -1,0 +1,12 @@
+{
+    "name": "personalverwaltung-server",
+    "version": "0.1.0",
+    "private": true,
+    "dependencies": {
+      "express": "^4.18.2",
+      "prom-client": "^15.1.0"
+    },
+    "scripts": {
+      "start": "node server.js"
+    }
+  }
