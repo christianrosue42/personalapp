@@ -1,30 +1,22 @@
-// imports the Express.js module and creates an instance of an Express.js application.
-var express = require('express'); 
-var app = express();
+const express = require('express');
+const cors = require('cors');
+const apiController = require('./controller/apiController');
 
-// imports the cors module for enabling Cross-Origin Resource Sharing (CORS) in the Express.js application.
-var cors = require('cors');
+const app = express();
 
-// Eine Referenz zu der Datei im controllers-Ordner
-//var apiController = require('./controllers/apiController');
+app.use(cors());
+app.use(express.json());
 
-require('dotenv').config();
+// Use the routes defined in apiController
+app.use('/api', apiController);
 
-// use AWS SDK to interact with DynamoDB
-const AWS = require('aws-sdk');
+// Error handling middleware
+app.use((err, req, res, next) => {
+    res.status(500).json({ message: err.message });
+});
 
-// create a DynamoDB service object
-const ddb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
+const PORT = process.env.PORT || 3000;
 
-app.use(cors())
-
-//mongoose.connect(process.env.DB_URL);
-
-// process.env.PORT || 3000 erlaubt uns, den Port als Environment-Variable einzureichen. Wenn kein Port eingereicht wird, wird der Port 3000 verwendet
-var port  = process.env.PORT || 3000;
-
-// Initalizierung des appController und Übergabe von app- und cache-Instanzen
-//apiController(app);
-
-// Die API wird am definierten Port gestartet
-app.listen(port);
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
