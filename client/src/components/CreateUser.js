@@ -54,27 +54,29 @@ const CreateUser = ({ employees, setEmployees}) => {
 
     //useEffect to save the employees array in the local storage
     useEffect(() => {
+        // Save the employees array in the local storage
         localStorage.setItem('employees', JSON.stringify(employees))
+    
+        // Use data from employees array to send a POST request to the server
+        const employeesData = JSON.parse(localStorage.getItem('employees'));
+    
+        // Send a POST request to the server
+        fetch('http://localhost:3000/employees', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(employeesData),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
     }, [employees]); // Add employees as a dependency
-
-    // use data from employees array to send a POST request to the server
-    const employeesData = JSON.parse(localStorage.getItem('employees'));
-
-    //send a POST request to the server
-    fetch('http://localhost:3000/employees', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(employeesData),
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Success:', data);
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-    });
+    
 
 
     // return the form with input fields for the user details on client side
