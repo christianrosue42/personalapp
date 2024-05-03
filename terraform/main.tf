@@ -18,6 +18,32 @@ data "aws_security_group" "robohub_security_group" {
   id = "sg-0df390e3dc6a66a3a" # replace with your security group ID
 }
 
+resource "aws_vpc" "main" {
+  cidr_block = "10.0.0.0/16" # replace with your desired CIDR block
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_subnet" "public_subnet" {
+  vpc_id     = aws_vpc.main.id
+  cidr_block = "10.0.1.0/24" # replace with your desired CIDR block
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_subnet" "private_subnet" {
+  vpc_id     = aws_vpc.main.id
+  cidr_block = "10.0.2.0/24" # replace with your desired CIDR block
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
 resource "aws_ecs_cluster" "robohub_cluster" {
   name = "robohub-cluster"
 }
@@ -73,14 +99,14 @@ resource "aws_lb" "alb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [data.aws_security_group.robohub_security_group.id]
-  subnets            = ["subnet-0afdbd7d557928c5c", "subnet-0e526cdda6e37f6d1"] # replace with your public subnet IDs
+  subnets            = [aws_subnet.public_subnet.id]
 }
 
 resource "aws_lb_target_group" "frontend_target_group" {
   name     = "frontend-target-group"
   port     = 80
   protocol = "HTTP"
-  vpc_id   = "vpc-0efa3fb84f70b7b31" # replace with your VPC ID
+  vpc_id   = aws_vpc.main.id
   target_type = "ip"
 
 }
@@ -89,7 +115,7 @@ resource "aws_lb_target_group" "backend_target_group" {
   name     = "backend-target-group"
   port     = 3000
   protocol = "HTTP"
-  vpc_id   = "vpc-0efa3fb84f70b7b31" # replace with your VPC ID
+  vpc_id   = aws_vpc.main.id
   target_type = "ip"
 }
 
@@ -121,8 +147,13 @@ resource "aws_ecs_service" "frontend_service" {
   task_definition = aws_ecs_task_definition.frontend_task.arn
   launch_type     = "FARGATE"
 
+  depends_on = [
+    aws_lb.alb,
+    aws_lb_target_group.frontend_target_group
+  ]
+
   network_configuration {
-    subnets = ["subnet-0afdbd7d557928c5c", "subnet-0e526cdda6e37f6d1"] # replace with your public subnet IDs
+    subnets = [aws_subnet.public_subnet.id]
     assign_public_ip = true
     security_groups  = [data.aws_security_group.robohub_security_group.id]
   }
@@ -142,8 +173,13 @@ resource "aws_ecs_service" "backend_service" {
   task_definition = aws_ecs_task_definition.backend_task.arn
   launch_type     = "FARGATE"
 
+  depends_on = [
+    aws_lb.alb,
+    aws_lb_target_group.backend_target_group
+  ]
+
   network_configuration {
-    subnets = ["subnet-0e4c5dc357e11c54e", "subnet-0a19e52ecfd2d02dc"] # replace with your private subnet IDs
+    subnets = [aws_subnet.private_subnet.id]
     assign_public_ip = false
     security_groups  = [data.aws_security_group.robohub_security_group.id]
   }

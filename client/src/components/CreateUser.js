@@ -62,7 +62,7 @@ const CreateUser = ({ employees, setEmployees}) => {
 
         // create environment variable for the server URL
         const serverUrl = process.env.REACT_APP_SERVER_URL;
-    
+        console.log("Server Url ", serverUrl);
         // Send a POST request to the server
         fetch(`${serverUrl}/employees`, {
             method: 'POST',
