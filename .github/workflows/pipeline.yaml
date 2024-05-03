@@ -61,16 +61,16 @@ jobs:
         aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
 
     - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v1
+      uses: hashicorp/setup-terraform@v2
 
     - name: Terraform Init
-      run: terraform init terraform
+      run:  terraform -chdir=terraform init
 
     - name: Terraform Validate
-      run: terraform validate terraform
+      run: terraform -chdir=terraform validate
 
     - name: Terraform Plan
-      run: terraform plan terraform
+      run: terraform -chdir=terraform plan
 
     - name: Terraform Apply
-      run: terraform apply -auto-approve terraform
+      run: terraform -chdir=terraform apply -auto-approve
