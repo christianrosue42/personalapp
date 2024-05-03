@@ -17,6 +17,8 @@ import { IconContext } from "react-icons";
  * It takes in an employees array and a setEmployees function as props, maintains its own state for the new user,
  * and calls the setEmployees function with the new user when the "Add Employee" button is clicked.
  * 
+ * Sends a POST request to the '/employees' route in the Express server with the new user data when the form is submitted.
+ * 
  * @function CreateUser - creates a new user
  * 
  * receives the following props from ParentComponent.js:
@@ -52,9 +54,32 @@ const CreateUser = ({ employees, setEmployees}) => {
 
     //useEffect to save the employees array in the local storage
     useEffect(() => {
+        // Save the employees array in the local storage
         localStorage.setItem('employees', JSON.stringify(employees))
+    
+        // Use data from employees array to send a POST request to the server
+        const employeesData = JSON.parse(localStorage.getItem('employees'));
+    
+        // Send a POST request to the server
+        fetch('http://localhost:3000/employees', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(employeesData),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
     }, [employees]); // Add employees as a dependency
+    
 
+
+    // return the form with input fields for the user details on client side
 
     return (
         <Form style={{
