@@ -59,9 +59,12 @@ const CreateUser = ({ employees, setEmployees}) => {
     
         // Use data from employees array to send a POST request to the server
         const employeesData = JSON.parse(localStorage.getItem('employees'));
+
+        // create environment variable for the server URL
+        const serverUrl = process.env.REACT_APP_SERVER_URL;
     
         // Send a POST request to the server
-        fetch('http://localhost:3000/employees', {
+        fetch(`${serverUrl}/employees`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -155,4 +155,6 @@ resource "aws_ecs_service" "backend_service" {
     container_name   = "backend-container"
     container_port   = 3000
   }
+
+  
 }
