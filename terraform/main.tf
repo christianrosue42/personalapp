@@ -14,6 +14,10 @@ data "aws_iam_role" "ecs_task_execution_role" {
   name = "ecsTaskExecutionRole"
 }
 
+data "aws_security_group" "robohub_security_group" {
+  id = "sg-0df390e3dc6a66a3a" # replace with your security group ID
+}
+
 resource "aws_ecs_cluster" "robohub_cluster" {
   name = "robohub-cluster"
 }
@@ -50,6 +54,7 @@ resource "aws_ecs_service" "frontend_service" {
   network_configuration {
     subnets = ["subnet-0afdbd7d557928c5c", "subnet-0e526cdda6e37f6d1"] # replace with your public subnet IDs
     assign_public_ip = true
+    security_groups  = [data.aws_security_group.robohub_security_group.id]
   }
 
   desired_count = 1
@@ -69,8 +74,8 @@ resource "aws_ecs_task_definition" "backend_task" {
       image = "${var.docker_username}/robohub-server:latest"
       portMappings = [
         {
-          containerPort = 80
-          hostPort      = 80
+          containerPort = 3000
+          hostPort      = 3000
           protocol      = "tcp"
         }
       ]
@@ -87,6 +92,7 @@ resource "aws_ecs_service" "backend_service" {
   network_configuration {
     subnets = ["subnet-0a19e52ecfd2d02dc", "subnet-0e4c5dc357e11c54e"] # replace with your private subnet IDs
     assign_public_ip = false
+    security_groups  = [data.aws_security_group.robohub_security_group.id]
   }
 
   desired_count = 1
