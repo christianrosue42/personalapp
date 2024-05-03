@@ -14,6 +14,18 @@ data "aws_iam_role" "ecs_task_execution_role" {
   name = "ecsTaskExecutionRole"
 }
 
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.main.id
+}
+
+resource "aws_vpc" "main" {
+  cidr_block = "10.0.0.0/16"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
 resource "aws_security_group" "web_sg" {
   name        = "web_sg"
   description = "Allow inbound traffic on port 80"
@@ -31,14 +43,6 @@ resource "aws_security_group_rule" "allow_http" {
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.web_sg.id
-}
-
-resource "aws_vpc" "main" {
-  cidr_block = "10.0.0.0/16"
-
-  lifecycle {
-    create_before_destroy = true
-  }
 }
 
 resource "aws_subnet" "public_subnet_1" {
