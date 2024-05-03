@@ -68,7 +68,7 @@ resource "aws_ecs_task_definition" "backend_task" {
   ])
 }
 
-resource "aws_lb" "alb" {
+resource "aws_lb" "robohub-alb" {
   name               = "robohub-alb"
   internal           = false
   load_balancer_type = "application"
