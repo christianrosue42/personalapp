@@ -3,7 +3,8 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - master
+      - refactor-app-architecture
+
 
 env:
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
