@@ -48,6 +48,15 @@ resource "aws_ecs_cluster" "robohub_cluster" {
   name = "robohub-cluster"
 }
 
+resource "aws_lb" "alb" {
+  name               = "robohub-alb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [data.aws_security_group.robohub_security_group.id]
+  subnets            = [aws_subnet.public_subnet.id]
+}
+
+// Frontend resources
 resource "aws_ecs_task_definition" "frontend_task" {
   family                   = "frontend-task-family"
   network_mode             = "awsvpc"
@@ -71,37 +80,6 @@ resource "aws_ecs_task_definition" "frontend_task" {
   ])
 }
 
-resource "aws_ecs_task_definition" "backend_task" {
-  family                   = "backend-task-family"
-  network_mode             = "awsvpc"
-  requires_compatibilities = ["FARGATE"]
-  cpu                      = "256"
-  memory                   = "512"
-  execution_role_arn       = data.aws_iam_role.ecs_task_execution_role.arn
-
-  container_definitions = jsonencode([
-    {
-      name  = "backend-container"
-      image = "${var.docker_username}/robohub-server:latest"
-      portMappings = [
-        {
-          containerPort = 3000
-          hostPort      = 3000
-          protocol      = "tcp"
-        }
-      ]
-    }
-  ])
-}
-
-resource "aws_lb" "alb" {
-  name               = "robohub-alb"
-  internal           = false
-  load_balancer_type = "application"
-  security_groups    = [data.aws_security_group.robohub_security_group.id]
-  subnets            = [aws_subnet.public_subnet.id]
-}
-
 resource "aws_lb_target_group" "frontend_target_group" {
   name     = "frontend-target-group"
   port     = 80
@@ -109,14 +87,9 @@ resource "aws_lb_target_group" "frontend_target_group" {
   vpc_id   = aws_vpc.main.id
   target_type = "ip"
 
-}
-
-resource "aws_lb_target_group" "backend_target_group" {
-  name     = "backend-target-group"
-  port     = 3000
-  protocol = "HTTP"
-  vpc_id   = aws_vpc.main.id
-  target_type = "ip"
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_lb_listener" "frontend_listener" {
@@ -128,16 +101,9 @@ resource "aws_lb_listener" "frontend_listener" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.frontend_target_group.arn
   }
-}
 
-resource "aws_lb_listener" "backend_listener" {
-  load_balancer_arn = aws_lb.alb.arn
-  port              = 3000
-  protocol          = "HTTP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.backend_target_group.arn
+  lifecycle {
+    create_before_destroy = false
   }
 }
 
@@ -167,6 +133,49 @@ resource "aws_ecs_service" "frontend_service" {
   }
 }
 
+// Backend resources
+resource "aws_ecs_task_definition" "backend_task" {
+  family                   = "backend-task-family"
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = "256"
+  memory                   = "512"
+  execution_role_arn       = data.aws_iam_role.ecs_task_execution_role.arn
+
+  container_definitions = jsonencode([
+    {
+      name  = "backend-container"
+      image = "${var.docker_username}/robohub-server:latest"
+      portMappings = [
+        {
+          containerPort = 3000
+          hostPort      = 3000
+          protocol      = "tcp"
+        }
+      ]
+    }
+  ])
+}
+
+resource "aws_lb_target_group" "backend_target_group" {
+  name     = "backend-target-group"
+  port     = 3000
+  protocol = "HTTP"
+  vpc_id   = aws_vpc.main.id
+  target_type = "ip"
+}
+
+resource "aws_lb_listener" "backend_listener" {
+  load_balancer_arn = aws_lb.alb.arn
+  port              = 3000
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.backend_target_group.arn
+  }
+}
+
 resource "aws_ecs_service" "backend_service" {
   name            = "backend-service"
   cluster         = aws_ecs_cluster.robohub_cluster.id
@@ -191,6 +200,4 @@ resource "aws_ecs_service" "backend_service" {
     container_name   = "backend-container"
     container_port   = 3000
   }
-
-  
 }
