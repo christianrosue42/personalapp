@@ -1,3 +1,11 @@
+terraform {
+  backend "s3" {
+    bucket = "robohub-terraform-state"
+    key    = "terraformstate"
+    region = "eu-central-1"
+  }
+}
+
 provider "aws" {
   region = "eu-central-1"
 }
