@@ -26,22 +26,44 @@ resource "aws_vpc" "main" {
   }
 }
 
-resource "aws_subnet" "public_subnet" {
+resource "aws_subnet" "public_subnet_1" {
   vpc_id     = aws_vpc.main.id
   cidr_block = "10.0.1.0/24" # replace with your desired CIDR block
+  availability_zone = "eu-central-1a"
 
   lifecycle {
     create_before_destroy = true
   }
 }
 
-resource "aws_subnet" "private_subnet" {
+resource "aws_subnet" "public_subnet_2" {
   vpc_id     = aws_vpc.main.id
   cidr_block = "10.0.2.0/24" # replace with your desired CIDR block
+  availability_zone = "eu-central-1b"
 
   lifecycle {
     create_before_destroy = true
   }
+}
+
+resource "aws_subnet" "private_subnet_1" {
+  vpc_id     = aws_vpc.main.id
+  cidr_block = "10.0.3.0/24" # replace with your desired CIDR block
+  availability_zone = "eu-central-1a"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_subnet" "private_subnet_2" {
+  vpc_id     = aws_vpc.main.id
+  cidr_block = "10.0.4.0/24"
+  availability_zone = "eu-central-1b"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "aws_ecs_cluster" "robohub_cluster" {
