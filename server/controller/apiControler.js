@@ -31,7 +31,7 @@ app.post('/employees', (req, res) => {
         Item: newEmployee
     };
 
-    // Use the DynamoDB document client to add the new employee to the 'Employees' table
+    // Use the DynamoDB document client to add the new employee to the 'employees' table
     docClient.put(params, (err, data) => {
         if (err) {
             console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
