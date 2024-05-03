@@ -71,7 +71,7 @@ jobs:
       run: terraform -chdir=terraform validate
 
     - name: Terraform Plan
-      run: terraform -chdir=terraform plan
+      run: terraform -chdir=terraform plan -input=false -no-color
 
     - name: Terraform Apply
       run: terraform -chdir=terraform apply -auto-approve
