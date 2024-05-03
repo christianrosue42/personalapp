@@ -5,7 +5,6 @@ on:
     branches:
       - refactor-app-architecture
 
-
 env:
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -75,3 +74,7 @@ jobs:
 
     - name: Terraform Apply
       run: terraform -chdir=terraform apply -auto-approve
+
+    - name: Update ECS Service
+      run: |
+        aws ecs update-service --cluster robohub-cluster --service robohub-service --force-new-deployment
