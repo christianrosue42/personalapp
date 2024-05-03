@@ -75,7 +75,7 @@ resource "aws_lb" "alb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [data.aws_security_group.robohub_security_group.id]
-  subnets            = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2]
+  subnets            = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2.id]
 }
 
 // Frontend resources
@@ -141,7 +141,7 @@ resource "aws_ecs_service" "frontend_service" {
   ]
 
   network_configuration {
-    subnets = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2]
+    subnets = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2.id]
     assign_public_ip = true
     security_groups  = [data.aws_security_group.robohub_security_group.id]
   }
