@@ -82,7 +82,7 @@ resource "aws_lb_target_group" "frontend_target_group" {
   protocol = "HTTP"
   vpc_id   = "vpc-0efa3fb84f70b7b31" # replace with your VPC ID
   target_type = "ip"
-  depends_on = [aws_lb_listener.frontend_listener]
+
 }
 
 resource "aws_lb_target_group" "backend_target_group" {
@@ -91,7 +91,6 @@ resource "aws_lb_target_group" "backend_target_group" {
   protocol = "HTTP"
   vpc_id   = "vpc-0efa3fb84f70b7b31" # replace with your VPC ID
   target_type = "ip"
-  depends_on = [aws_lb_listener.backend_listener]
 }
 
 resource "aws_lb_listener" "frontend_listener" {
