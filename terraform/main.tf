@@ -61,26 +61,6 @@ resource "aws_subnet" "private_subnet_2" {
   availability_zone = "eu-central-1b"
 }
 
-# add route table for public subnets
-resource "aws_route_table" "public_route_table" {
-  vpc_id = aws_vpc.main.id
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.igw.id
-  }
-}
-
-# associate public subnets with the public route table
-resource "aws_route_table_association" "public_subnet_1_association" {
-  subnet_id      = aws_subnet.public_subnet_1.id
-  route_table_id = aws_route_table.public_route_table.id
-}
-
-resource "aws_route_table_association" "public_subnet_2_association" {
-  subnet_id      = aws_subnet.public_subnet_2.id
-  route_table_id = aws_route_table.public_route_table.id
-}
 
 resource "aws_ecs_cluster" "robohub_cluster" {
   name = "robohub-cluster"
@@ -95,29 +75,6 @@ resource "aws_lb" "alb" {
 }
 
 // Frontend resources
-resource "aws_ecs_task_definition" "frontend_task" {
-  family                   = "frontend-task-family"
-  network_mode             = "awsvpc"
-  requires_compatibilities = ["FARGATE"]
-  cpu                      = "256"
-  memory                   = "512"
-  execution_role_arn       = data.aws_iam_role.ecs_task_execution_role.arn
-
-  container_definitions = jsonencode([
-    {
-      name  = "frontend-container"
-      image = "${var.docker_username}/robohub-client:latest"
-      portMappings = [
-        {
-          containerPort = 80
-          hostPort      = 80
-          protocol      = "tcp"
-        }
-      ]
-    }
-  ])
-}
-
 resource "aws_lb_target_group" "frontend_target_group" {
   name     = "frontend-target-group"
   port     = 80
@@ -157,10 +114,8 @@ resource "aws_ecs_service" "frontend_service" {
     container_port   = 80
   }
 }
-
-// Backend resources
-resource "aws_ecs_task_definition" "backend_task" {
-  family                   = "backend-task-family"
+resource "aws_ecs_task_definition" "frontend_task" {
+  family                   = "frontend-task-family"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = "256"
@@ -169,12 +124,12 @@ resource "aws_ecs_task_definition" "backend_task" {
 
   container_definitions = jsonencode([
     {
-      name  = "backend-container"
-      image = "${var.docker_username}/robohub-server:latest"
+      name  = "frontend-container"
+      image = "${var.docker_username}/robohub-client:latest"
       portMappings = [
         {
-          containerPort = 3000
-          hostPort      = 3000
+          containerPort = 80
+          hostPort      = 80
           protocol      = "tcp"
         }
       ]
@@ -182,6 +137,7 @@ resource "aws_ecs_task_definition" "backend_task" {
   ])
 }
 
+// Backend resources
 resource "aws_lb_target_group" "backend_target_group" {
   name     = "backend-target-group"
   port     = 3000
@@ -220,6 +176,29 @@ resource "aws_ecs_service" "backend_service" {
     container_name   = "backend-container"
     container_port   = 3000
   }
+}
+
+resource "aws_ecs_task_definition" "backend_task" {
+  family                   = "backend-task-family"
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = "256"
+  memory                   = "512"
+  execution_role_arn       = data.aws_iam_role.ecs_task_execution_role.arn
+
+  container_definitions = jsonencode([
+    {
+      name  = "backend-container"
+      image = "${var.docker_username}/robohub-server:latest"
+      portMappings = [
+        {
+          containerPort = 3000
+          hostPort      = 3000
+          protocol      = "tcp"
+        }
+      ]
+    }
+  ])
 }
 
 output "load_balancer_dns_name" {
