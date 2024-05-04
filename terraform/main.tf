@@ -72,6 +72,10 @@ resource "aws_lb" "alb" {
   load_balancer_type = "application"
   security_groups    = [aws_security_group.web_sg.id]
   subnets            = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2.id]
+
+  depends_on = [ 
+
+   ]
 }
 
 // Frontend resources
@@ -98,6 +102,7 @@ resource "aws_ecs_service" "frontend_service" {
   name            = "frontend-service"
   cluster         = aws_ecs_cluster.robohub_cluster.id
   task_definition = aws_ecs_task_definition.frontend_task.arn
+  health_check_grace_period_seconds = 300
   launch_type     = "FARGATE"
 
   network_configuration {
