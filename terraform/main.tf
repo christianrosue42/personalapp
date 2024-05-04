@@ -22,11 +22,6 @@ resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
 }
 
-resource "aws_vpc_gateway_attachment" "main" {
-  vpc_id = aws_vpc.main.id
-  internet_gateway_id = aws_internet_gateway.igw.id
-}
-
 resource "aws_security_group" "web_sg" {
   name        = "web_sg"
   description = "Allow inbound traffic on port 80"
