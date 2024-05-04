@@ -212,6 +212,11 @@ resource "aws_ecs_task_definition" "frontend_task" {
     {
       name  = "frontend-container"
       image = "${var.docker_username}/robohub-client:latest"
+      
+      repositoryCredentials = {
+        "credentialsParameter": "arn:aws:secretsmanager:region:aws_account_id:secret:DockerHubCredentials"
+        }
+
       portMappings = [
         {
           containerPort = 80
@@ -275,6 +280,11 @@ resource "aws_ecs_task_definition" "backend_task" {
     {
       name  = "backend-container"
       image = "${var.docker_username}/robohub-server:latest"
+
+    repositoryCredentials = {
+        "credentialsParameter": "arn:aws:secretsmanager:region:aws_account_id:secret:DockerHubCredentials"
+        }
+
       portMappings = [
         {
           containerPort = 3000
