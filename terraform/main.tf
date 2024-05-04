@@ -32,8 +32,44 @@ resource "aws_vpc" "main" {
   cidr_block = "10.0.0.0/16"
 }
 
+# create internet gateway and attach it to the VPC
+
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
+}
+
+# create nat gateway for backend in private subnets
+
+resource "aws_eip" "nat_eip" {
+  vpc = true
+}
+
+resource "aws_nat_gateway" "nat" {
+  allocation_id = aws_eip.nat.id
+  subnet_id     = aws_subnet.public_subnet_1.id
+}
+
+# create route table for private subnets
+
+resource "aws_route_table" "private_route_table" {
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat.id
+  }
+}
+
+# associate route table with private subnets
+
+resource "aws_route_table_association" "private_subnet_1_association" {
+  subnet_id      = aws_subnet.private_subnet_1.id
+  route_table_id = aws_route_table.private_route_table.id
+}
+
+resource "aws_route_table_association" "private_subnet_2_association" {
+  subnet_id      = aws_subnet.private_subnet_2.id
+  route_table_id = aws_route_table.private_route_table.id
 }
 
 resource "aws_security_group" "web_sg" {
@@ -42,7 +78,9 @@ resource "aws_security_group" "web_sg" {
   vpc_id      = aws_vpc.main.id
 }
 
-resource "aws_security_group_rule" "allow_http" {
+# allow inbound traffic on port 80
+
+resource "aws_security_group_rule" "web_sg_ingress" {
   type              = "ingress"
   from_port         = 80
   to_port           = 80
@@ -50,6 +88,18 @@ resource "aws_security_group_rule" "allow_http" {
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.web_sg.id
 }
+
+# allow outbound traffic to the internet
+
+resource "aws_security_group_rule" "web_sg_egress" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.web_sg.id
+}
+
 
 resource "aws_subnet" "public_subnet_1" {
   vpc_id     = aws_vpc.main.id
