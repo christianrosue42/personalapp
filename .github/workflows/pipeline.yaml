@@ -63,11 +63,11 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
 
-    - name: Destroy existing infrastructure (causes downtime)
-      run: terraform -chdir=terraform destroy -auto-approve
-
     - name: Terraform Init
       run:  terraform -chdir=terraform init
+
+    - name: Destroy existing infrastructure (causes downtime)
+      run: terraform -chdir=terraform destroy -auto-approve
 
     - name: Terraform Validate
       run: terraform -chdir=terraform validate
