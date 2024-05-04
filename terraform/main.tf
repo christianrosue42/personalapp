@@ -85,7 +85,8 @@ resource "aws_ecs_task_definition" "frontend_task" {
   container_definitions = jsonencode([
     {
       name  = "frontend-container"
-      image = "${var.docker_username}/robohub-client:latest"
+      #image = "${var.docker_username}/robohub-client:latest"
+      image = "crosue/robohub-client:latest"
       portMappings = [
         {
           containerPort = 80
@@ -149,7 +150,8 @@ resource "aws_ecs_task_definition" "backend_task" {
   container_definitions = jsonencode([
     {
       name  = "backend-container"
-      image = "${var.docker_username}/robohub-server:latest"
+      #image = "${var.docker_username}/robohub-server:latest"
+      image = "crosue/robohub-server:latest"
       portMappings = [
         {
           containerPort = 3000
