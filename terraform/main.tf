@@ -211,12 +211,8 @@ resource "aws_ecs_task_definition" "frontend_task" {
   container_definitions = jsonencode([
     {
       name  = "frontend-container"
-      image = "crosue/robohub-client:latest"
+      image = "crosue/robohub-client:latest" 
       
-      repositoryCredentials = {
-        "credentialsParameter": "arn:aws:secretsmanager:region:aws_account_id:secret:DockerHubCredentials"
-        }
-
       portMappings = [
         {
           containerPort = 80
@@ -280,11 +276,7 @@ resource "aws_ecs_task_definition" "backend_task" {
     {
       name  = "backend-container"
       image = "crosue/robohub-server:latest"
-
-    repositoryCredentials = {
-        "credentialsParameter": "arn:aws:secretsmanager:region:aws_account_id:secret:DockerHubCredentials"
-        }
-
+    
       portMappings = [
         {
           containerPort = 3000
