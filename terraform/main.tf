@@ -61,6 +61,27 @@ resource "aws_subnet" "private_subnet_2" {
   availability_zone = "eu-central-1b"
 }
 
+# add route table for public subnets
+resource "aws_route_table" "public_route_table" {
+  vpc_id = aws_vpc.main.id
+
+  route = {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.igw.id
+  }
+}
+
+# associate public subnets with the public route table
+resource "aws_route_table_association" "public_subnet_1_association" {
+  subnet_id      = aws_subnet.public_subnet_1.id
+  route_table_id = aws_route_table.public_route_table.id
+}
+
+resource "aws_route_table_association" "public_subnet_2_association" {
+  subnet_id      = aws_subnet.public_subnet_2.id
+  route_table_id = aws_route_table.public_route_table.id
+}
+
 resource "aws_ecs_cluster" "robohub_cluster" {
   name = "robohub-cluster"
 }
@@ -85,8 +106,7 @@ resource "aws_ecs_task_definition" "frontend_task" {
   container_definitions = jsonencode([
     {
       name  = "frontend-container"
-      #image = "${var.docker_username}/robohub-client:latest"
-      image = "crosue/robohub-client:latest"
+      image = "${var.docker_username}/robohub-client:latest"
       portMappings = [
         {
           containerPort = 80
@@ -150,8 +170,7 @@ resource "aws_ecs_task_definition" "backend_task" {
   container_definitions = jsonencode([
     {
       name  = "backend-container"
-      #image = "${var.docker_username}/robohub-server:latest"
-      image = "crosue/robohub-server:latest"
+      image = "${var.docker_username}/robohub-server:latest"
       portMappings = [
         {
           containerPort = 3000
