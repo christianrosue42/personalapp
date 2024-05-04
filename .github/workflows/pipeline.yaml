@@ -1,3 +1,6 @@
+# building the Docker images and pushing them to Docker Hub. 
+# AWS ECS will then pull these images and run them based on the configuration
+# Terraform will be used to create the necessary infrastructure on AWS
 name: CI/CD Pipeline
 
 on:
