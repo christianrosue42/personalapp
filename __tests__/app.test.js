@@ -40,10 +40,10 @@ describe('End-to-end test', () => {
   }, 10000);
 
   test('navigates to user list when Mitarbeiterliste is clicked', async () => {
-    await driver.get('https://perverapp.s3.eu-central-1.amazonaws.com/index.html');
+    await driver.get(`http://${REACT_APP_API_URL}/index.html`);
     await driver.findElement(By.linkText('Mitarbeiter hinzufügen')).click();
-    await driver.wait(until.urlIs('https://perverapp.s3.eu-central-1.amazonaws.com/create-user'), 5000);
+    await driver.wait(until.urlIs(`http://${REACT_APP_API_URL}/create-user`), 5000);
     const currentUrl = await driver.getCurrentUrl();
-    expect(currentUrl).toBe('https://perverapp.s3.eu-central-1.amazonaws.com/create-user');
+    expect(currentUrl).toBe(`http://${REACT_APP_API_URL}/create-user`);
   }, 10000);
 });
