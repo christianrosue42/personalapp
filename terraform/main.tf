@@ -1,3 +1,8 @@
+# This script sets up a VPC with public and private subnets, 
+# an ECS cluster, and frontend and backend services 
+# with associated load balancers and target groups. 
+# It also outputs the DNS name of the load balancer.
+
 terraform {
   backend "s3" {
     bucket = "robohub-terraform-state"
@@ -61,7 +66,6 @@ resource "aws_subnet" "private_subnet_2" {
   availability_zone = "eu-central-1b"
 }
 
-
 resource "aws_ecs_cluster" "robohub_cluster" {
   name = "robohub-cluster"
 }
@@ -72,13 +76,37 @@ resource "aws_lb" "alb" {
   load_balancer_type = "application"
   security_groups    = [aws_security_group.web_sg.id]
   subnets            = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2.id]
-
-  depends_on = [ 
-
-   ]
 }
 
-// Frontend resources
+resource "aws_route_table" "route_table" {
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.igw.id  
+  }
+}
+
+resource "aws_route_table_association" "public_subnet_1_association" {
+  subnet_id      = aws_subnet.public_subnet_1.id
+  route_table_id = aws_route_table.route_table.id
+}
+
+resource "aws_route_table_association" "public_subnet_2_association" {
+  subnet_id      = aws_subnet.public_subnet_2.id
+  route_table_id = aws_route_table.route_table.id
+}
+
+resource "aws_route_table_association" "private_subnet_1_association" {
+  subnet_id      = aws_subnet.private_subnet_1.id
+  route_table_id = aws_route_table.route_table.id
+}
+
+resource "aws_route_table_association" "private_subnet_2_association" {
+  subnet_id      = aws_subnet.private_subnet_2.id
+  route_table_id = aws_route_table.route_table.id
+}
+
 resource "aws_lb_target_group" "frontend_target_group" {
   name     = "frontend-target-group"
   port     = 80
@@ -119,6 +147,7 @@ resource "aws_ecs_service" "frontend_service" {
     container_port   = 80
   }
 }
+
 resource "aws_ecs_task_definition" "frontend_task" {
   family                   = "frontend-task-family"
   network_mode             = "awsvpc"
@@ -142,7 +171,6 @@ resource "aws_ecs_task_definition" "frontend_task" {
   ])
 }
 
-// Backend resources
 resource "aws_lb_target_group" "backend_target_group" {
   name     = "backend-target-group"
   port     = 3000
