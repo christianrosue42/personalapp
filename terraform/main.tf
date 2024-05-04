@@ -148,7 +148,7 @@ resource "aws_subnet" "private_subnet_2" {
 }
 
 resource "aws_ecs_cluster" "robohub_cluster" {
-  name = "robohub-cluster"
+  name = "robohub_cluster"
 }
 
 resource "aws_lb" "alb" {
@@ -179,7 +179,7 @@ resource "aws_lb_listener" "frontend_listener" {
 }
 
 resource "aws_ecs_service" "frontend_service" {
-  name            = "frontend-service"
+  name            = "frontend_service"
   cluster         = aws_ecs_cluster.robohub_cluster.id
   task_definition = aws_ecs_task_definition.frontend_task.arn
   health_check_grace_period_seconds = 300
@@ -243,7 +243,7 @@ resource "aws_lb_listener" "backend_listener" {
 }
 
 resource "aws_ecs_service" "backend_service" {
-  name            = "backend-service"
+  name            = "backend_service"
   cluster         = aws_ecs_cluster.robohub_cluster.id
   task_definition = aws_ecs_task_definition.backend_task.arn
   launch_type     = "FARGATE"
