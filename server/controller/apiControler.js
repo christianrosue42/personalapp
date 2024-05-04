@@ -11,10 +11,10 @@ app.use(bodyParser.json());
 
 // Configure the AWS SDK
 AWS.config.update({
-    region: env.AWS_REGION,
+    region: process.env.AWS_REGION,
     // AWS access key and secret key
-    accessKeyId: env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
 });
 
 // Create a DynamoDB document client

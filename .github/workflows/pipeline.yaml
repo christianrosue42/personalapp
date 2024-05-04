@@ -81,11 +81,6 @@ jobs:
     - name: Terraform Apply
       run: terraform -chdir=terraform apply -auto-approve
 
-    - name: Force new deployment
-      run: |
-        aws ecs update-service --cluster robohub_cluster --service frontend_service --force-new-deployment
-        aws ecs update-service --cluster robohub_cluster --service backend_service --force-new-deployment
-
     # Output the Load Balancer DNS Name to be used in the client as fetch URL
     - name: Get Load Balancer DNS Name
       id: lb_dns

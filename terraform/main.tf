@@ -211,7 +211,7 @@ resource "aws_ecs_task_definition" "frontend_task" {
   container_definitions = jsonencode([
     {
       name  = "frontend-container"
-      image = "${var.docker_username}/robohub-client:latest"
+      image = "crosue/robohub-client:latest"
       
       repositoryCredentials = {
         "credentialsParameter": "arn:aws:secretsmanager:region:aws_account_id:secret:DockerHubCredentials"
@@ -279,7 +279,7 @@ resource "aws_ecs_task_definition" "backend_task" {
   container_definitions = jsonencode([
     {
       name  = "backend-container"
-      image = "${var.docker_username}/robohub-server:latest"
+      image = "crosue/robohub-server:latest"
 
     repositoryCredentials = {
         "credentialsParameter": "arn:aws:secretsmanager:region:aws_account_id:secret:DockerHubCredentials"
