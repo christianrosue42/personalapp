@@ -14,30 +14,23 @@ data "aws_iam_role" "ecs_task_execution_role" {
   name = "ecsTaskExecutionRole"
 }
 
+resource "aws_vpc" "main" {
+  cidr_block = "10.0.0.0/16"
+}
+
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
 }
 
-resource "aws_vpc" "main" {
-  cidr_block = "10.0.0.0/16"
-
-  depends_on = [ 
-    aws_internet_gateway.igw
-   ]
-
-  lifecycle {
-    create_before_destroy = true
-  }
+resource "aws_vpc_gateway_attachment" "main" {
+  vpc_id = aws_vpc.main.id
+  internet_gateway_id = aws_internet_gateway.igw.id
 }
 
 resource "aws_security_group" "web_sg" {
   name        = "web_sg"
   description = "Allow inbound traffic on port 80"
   vpc_id      = aws_vpc.main.id
-
-  lifecycle {
-    create_before_destroy = true
-  }
 }
 
 resource "aws_security_group_rule" "allow_http" {
@@ -53,40 +46,24 @@ resource "aws_subnet" "public_subnet_1" {
   vpc_id     = aws_vpc.main.id
   cidr_block = "10.0.1.0/24"
   availability_zone = "eu-central-1a"
-
-  lifecycle {
-    create_before_destroy = true
-  }
 }
 
 resource "aws_subnet" "public_subnet_2" {
   vpc_id     = aws_vpc.main.id
   cidr_block = "10.0.2.0/24"
   availability_zone = "eu-central-1b"
-
-  lifecycle {
-    create_before_destroy = true
-  }
 }
 
 resource "aws_subnet" "private_subnet_1" {
   vpc_id     = aws_vpc.main.id
   cidr_block = "10.0.3.0/24"
   availability_zone = "eu-central-1a"
-
-  lifecycle {
-    create_before_destroy = true
-  }
 }
 
 resource "aws_subnet" "private_subnet_2" {
   vpc_id     = aws_vpc.main.id
   cidr_block = "10.0.4.0/24"
   availability_zone = "eu-central-1b"
-
-  lifecycle {
-    create_before_destroy = true
-  }
 }
 
 resource "aws_ecs_cluster" "robohub_cluster" {
@@ -131,10 +108,6 @@ resource "aws_lb_target_group" "frontend_target_group" {
   protocol = "HTTP"
   vpc_id   = aws_vpc.main.id
   target_type = "ip"
-
-  lifecycle {
-    create_before_destroy = true
-  }
 }
 
 resource "aws_lb_listener" "frontend_listener" {
@@ -146,10 +119,6 @@ resource "aws_lb_listener" "frontend_listener" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.frontend_target_group.arn
   }
-
-  lifecycle {
-    create_before_destroy = false
-  }
 }
 
 resource "aws_ecs_service" "frontend_service" {
@@ -157,11 +126,6 @@ resource "aws_ecs_service" "frontend_service" {
   cluster         = aws_ecs_cluster.robohub_cluster.id
   task_definition = aws_ecs_task_definition.frontend_task.arn
   launch_type     = "FARGATE"
-
-  depends_on = [
-    aws_lb.alb,
-    aws_lb_target_group.frontend_target_group
-  ]
 
   network_configuration {
     subnets = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2.id]
@@ -226,11 +190,6 @@ resource "aws_ecs_service" "backend_service" {
   cluster         = aws_ecs_cluster.robohub_cluster.id
   task_definition = aws_ecs_task_definition.backend_task.arn
   launch_type     = "FARGATE"
-
-  depends_on = [
-    aws_lb.alb,
-    aws_lb_target_group.backend_target_group
-  ]
 
   network_configuration {
     subnets = [aws_subnet.private_subnet_1.id, aws_subnet.private_subnet_2.id]
