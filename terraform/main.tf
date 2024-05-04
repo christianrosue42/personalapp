@@ -21,6 +21,10 @@ resource "aws_internet_gateway" "igw" {
 resource "aws_vpc" "main" {
   cidr_block = "10.0.0.0/16"
 
+  depends_on = [ 
+    aws_internet_gateway.igw
+   ]
+
   lifecycle {
     create_before_destroy = true
   }
@@ -241,4 +245,9 @@ resource "aws_ecs_service" "backend_service" {
     container_name   = "backend-container"
     container_port   = 3000
   }
+}
+
+output "load_balancer_dns_name" {
+  description = "value of the ALB DNS name to make requests to the backend service"  
+  value = aws_lb.alb.dns_name
 }
