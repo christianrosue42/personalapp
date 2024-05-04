@@ -81,11 +81,15 @@ jobs:
     - name: Terraform Apply
       run: terraform -chdir=terraform apply -auto-approve
 
-      # Output the Load Balancer DNS Name to be used in the client as fetch URL
+    - name: Force new deployment
+      run: |
+        aws ecs update-service --cluster your-cluster-name --service your-service-name --force-new-deployment
+
+    # Output the Load Balancer DNS Name to be used in the client as fetch URL
     - name: Get Load Balancer DNS Name
       id: lb_dns
       run: echo "::set-output name=dns::$(terraform output -raw load_balancer_dns_name)"
 
-      # Set the dns name as environment variable
+    # Set the dns name as environment variable
     - name: Set Environment Variable
       run: echo "REACT_APP_BACKEND_URL=http://$(outputs.lb_dns)" >> $GITHUB_ENV

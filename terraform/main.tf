@@ -1,7 +1,16 @@
-# This script sets up a VPC with public and private subnets, 
-# an ECS cluster, and frontend and backend services 
-# with associated load balancers and target groups. 
-# It also outputs the DNS name of the load balancer.
+# sets up a Virtual Private Cloud (VPC) with a CIDR block of 10.0.0.0/16.
+# creates an Internet Gateway and attaches it to the VPC.
+# sets up a security group that allows inbound traffic on port 80.
+# creates four subnets within the VPC, two public and two private, each with its own CIDR block and availability zone.
+# sets up an Elastic Container Service (ECS) cluster.
+# creates an Application Load Balancer (ALB) that is associated with the public subnets and the security group.
+# sets up a route table for the VPC and associates it with all the subnets.
+# creates two target groups for the ALB, one for the frontend and one for the backend.
+# sets up two listeners for the ALB, one for the frontend and one for the backend, each forwarding traffic to its respective target group.
+# creates two ECS services, one for the frontend and one for the backend, each with its own task definition and network configuration. 
+# The frontend service is associated with the public subnets and the backend service with the private subnets.
+# creates two ECS task definitions, one for the frontend and one for the backend, each specifying the container image to use, the CPU and memory to allocate, and the port mappings.
+# finally, it outputs the DNS name of the ALB, which can be used to make requests to the backend service.
 
 terraform {
   backend "s3" {
@@ -76,35 +85,6 @@ resource "aws_lb" "alb" {
   load_balancer_type = "application"
   security_groups    = [aws_security_group.web_sg.id]
   subnets            = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2.id]
-}
-
-resource "aws_route_table" "route_table" {
-  vpc_id = aws_vpc.main.id
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.igw.id  
-  }
-}
-
-resource "aws_route_table_association" "public_subnet_1_association" {
-  subnet_id      = aws_subnet.public_subnet_1.id
-  route_table_id = aws_route_table.route_table.id
-}
-
-resource "aws_route_table_association" "public_subnet_2_association" {
-  subnet_id      = aws_subnet.public_subnet_2.id
-  route_table_id = aws_route_table.route_table.id
-}
-
-resource "aws_route_table_association" "private_subnet_1_association" {
-  subnet_id      = aws_subnet.private_subnet_1.id
-  route_table_id = aws_route_table.route_table.id
-}
-
-resource "aws_route_table_association" "private_subnet_2_association" {
-  subnet_id      = aws_subnet.private_subnet_2.id
-  route_table_id = aws_route_table.route_table.id
 }
 
 resource "aws_lb_target_group" "frontend_target_group" {
