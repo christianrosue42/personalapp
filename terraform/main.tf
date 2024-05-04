@@ -41,7 +41,7 @@ resource "aws_internet_gateway" "igw" {
 # create nat gateway for backend in private subnets
 
 resource "aws_eip" "nat_eip" {
-  vpc = true
+  # vpc = true # deprecated
 }
 
 resource "aws_nat_gateway" "nat" {
