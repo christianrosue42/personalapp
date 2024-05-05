@@ -22,6 +22,30 @@ resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
 }
 
+resource "aws_subnet" "public_subnet_1" {
+  vpc_id     = aws_vpc.main.id
+  cidr_block = "10.0.1.0/24"
+  availability_zone = "eu-central-1a"
+}
+
+resource "aws_subnet" "public_subnet_2" {
+  vpc_id     = aws_vpc.main.id
+  cidr_block = "10.0.2.0/24"
+  availability_zone = "eu-central-1b"
+}
+
+resource "aws_subnet" "private_subnet_1" {
+  vpc_id     = aws_vpc.main.id
+  cidr_block = "10.0.3.0/24"
+  availability_zone = "eu-central-1a"
+}
+
+resource "aws_subnet" "private_subnet_2" {
+  vpc_id     = aws_vpc.main.id
+  cidr_block = "10.0.4.0/24"
+  availability_zone = "eu-central-1b"
+}
+
 resource "aws_eip" "nat_eip" {
 }
 
@@ -102,30 +126,6 @@ resource "aws_security_group_rule" "web_sg_egress" {
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.web_sg.id
-}
-
-resource "aws_subnet" "public_subnet_1" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = "10.0.1.0/24"
-  availability_zone = "eu-central-1a"
-}
-
-resource "aws_subnet" "public_subnet_2" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = "10.0.2.0/24"
-  availability_zone = "eu-central-1b"
-}
-
-resource "aws_subnet" "private_subnet_1" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = "10.0.3.0/24"
-  availability_zone = "eu-central-1a"
-}
-
-resource "aws_subnet" "private_subnet_2" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = "10.0.4.0/24"
-  availability_zone = "eu-central-1b"
 }
 
 resource "aws_ecs_cluster" "robohub_cluster" {
