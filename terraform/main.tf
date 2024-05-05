@@ -1,3 +1,10 @@
+# Description: This file contains the main terraform configuration to create the infrastructure for the Robohub application.
+# It creates a VPC with public and private subnets, NAT gateways, route tables, security groups, an ECS cluster, an Application Load Balancer (ALB), and ECS services for the frontend and backend components of the Robohub application.
+# The frontend service runs a containerized React application on port 80, and the backend service runs a containerized Node.js API on port 3000.
+# The ALB listens on ports 80 and 3000 and forwards requests to the frontend and backend services respectively.
+# The output of this configuration is the DNS name of the ALB, which can be used to make requests to the backend service.
+# Note: The container images for the frontend and backend services are hosted on Docker Hub and are publicly accessible. You can replace them with your own images if needed.
+
 terraform {
   backend "s3" {
     bucket = "robohub-terraform-state"
@@ -228,6 +235,8 @@ resource "aws_ecs_task_definition" "frontend_task" {
     }
   ])
 }
+
+# create baclend resources
 
 resource "aws_lb_target_group" "backend_target_group" {
   name     = "backend-target-group"
