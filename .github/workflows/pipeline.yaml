@@ -83,10 +83,8 @@ jobs:
     
     - name: Set Environment Variable for React App
       run: |
-        LB_DNS_NAME=$(terraform -chdir=terraform output -raw load_balancer_dns_name)
-        echo "REACT_APP_BACKEND_URL=http://$LB_DNS_NAME" >> .env
-        echo $REACT_APP_BACKEND_URL
-    
+        echo "REACT_APP_BACKEND_URL=http://$(terraform -chdir=terraform output -raw alb_dns_name)" > .env
+
     - name: Print .env file
       run: cat .env
 

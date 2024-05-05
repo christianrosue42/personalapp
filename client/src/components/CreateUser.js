@@ -60,6 +60,7 @@ const CreateUser = ({ employees, setEmployees}) => {
         // Use data from employees array to send a POST request to the server
         const employeesData = JSON.parse(localStorage.getItem('employees'));
 
+        // DNS Name hardcoded in .env file
         // create environment variable for the server URL
         const serverUrl = process.env.REACT_APP_BACKEND_URL;
         console.log("Server Url ", serverUrl);
