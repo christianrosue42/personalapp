@@ -82,4 +82,7 @@ jobs:
       run: terraform -chdir=terraform apply -auto-approve
 
     - name: Set Environment Variable
-      run: echo "REACT_APP_BACKEND_URL=http://$(terraform output -raw load_balancer_dns_name)" >> ./client/.env
+      run: echo "REACT_APP_BACKEND_URL=http://$(terraform output -raw load_balancer_dns_name)" >> .env
+
+    - name: Print .env file
+      run: cat .env
