@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const apiControler = require('./controler/apiControler');
+const apiController = require('./controller/apiController');
 
 const app = express();
 
@@ -8,7 +8,7 @@ app.use(cors());
 app.use(express.json());
 
 // Use the routes defined in apiController
-app.use('/api', apiControler);
+app.use('/', apiController);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

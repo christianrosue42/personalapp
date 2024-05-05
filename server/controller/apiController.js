@@ -3,11 +3,11 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const AWS = require('aws-sdk');
 
-// Create an Express application
-const app = express();
+// Create a router
+const router = express.Router();
 
 // Use body-parser middleware to parse incoming request bodies
-app.use(bodyParser.json());
+router.use(bodyParser.json());
 
 // Configure the AWS SDK
 AWS.config.update({
@@ -21,7 +21,7 @@ AWS.config.update({
 const docClient = new AWS.DynamoDB.DocumentClient();
 
 // Create a route that handles POST requests to '/employees'
-app.post('/employees', (req, res) => {
+router.post('/employees', (req, res) => {
     // Create a new employee object with the data from the request body
     const newEmployee = req.body;
 
@@ -43,8 +43,4 @@ app.post('/employees', (req, res) => {
     });
 });
 
-// Start the server on port 3000
-app.listen(3000, () => {
-    console.log('Server is running on port 3000');
-});
-
+module.exports = router;
