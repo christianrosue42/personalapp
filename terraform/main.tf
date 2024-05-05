@@ -1,17 +1,3 @@
-# sets up a Virtual Private Cloud (VPC) with a CIDR block of 10.0.0.0/16.
-# creates an Internet Gateway and attaches it to the VPC.
-# sets up a security group that allows inbound traffic on port 80.
-# creates four subnets within the VPC, two public and two private, each with its own CIDR block and availability zone.
-# sets up an Elastic Container Service (ECS) cluster.
-# creates an Application Load Balancer (ALB) that is associated with the public subnets and the security group.
-# sets up a route table for the VPC and associates it with all the subnets.
-# creates two target groups for the ALB, one for the frontend and one for the backend.
-# sets up two listeners for the ALB, one for the frontend and one for the backend, each forwarding traffic to its respective target group.
-# creates two ECS services, one for the frontend and one for the backend, each with its own task definition and network configuration. 
-# The frontend service is associated with the public subnets and the backend service with the private subnets.
-# creates two ECS task definitions, one for the frontend and one for the backend, each specifying the container image to use, the CPU and memory to allocate, and the port mappings.
-# finally, it outputs the DNS name of the ALB, which can be used to make requests to the backend service.
-
 terraform {
   backend "s3" {
     bucket = "robohub-terraform-state"
@@ -32,13 +18,9 @@ resource "aws_vpc" "main" {
   cidr_block = "10.0.0.0/16"
 }
 
-# create internet gateway and attach it to the VPC
-
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
 }
-
-# create nat gateway for backend in private subnet 1
 
 resource "aws_eip" "nat_eip" {
 }
@@ -48,7 +30,19 @@ resource "aws_nat_gateway" "nat" {
   subnet_id     = aws_subnet.public_subnet_1.id
 }
 
-# create route table for private subnet 1
+resource "aws_route_table" "main_route_table" {
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.igw.id
+    }
+}
+
+resource "aws_main_route_table_association" "main_route_table_association" {
+  vpc_id = aws_vpc.main.id
+  route_table_id = aws_route_table.main_route_table.id
+}
 
 resource "aws_route_table" "private_route_table_1" {
   vpc_id = aws_vpc.main.id
@@ -59,14 +53,10 @@ resource "aws_route_table" "private_route_table_1" {
   }
 }
 
-# associate route table with private subnet 1
-
 resource "aws_route_table_association" "private_subnet_1_association" {
   subnet_id      = aws_subnet.private_subnet_1.id
   route_table_id = aws_route_table.private_route_table_1.id
 }
-
-# create nat gateway for backend in private subnet 2
 
 resource "aws_eip" "nat_eip_2" {
 }
@@ -76,8 +66,6 @@ resource "aws_nat_gateway" "nat_2" {
   subnet_id     = aws_subnet.public_subnet_2.id
 }
 
-# create route table for private subnet 2
-
 resource "aws_route_table" "private_route_table_2" {
   vpc_id = aws_vpc.main.id
 
@@ -86,8 +74,6 @@ resource "aws_route_table" "private_route_table_2" {
     nat_gateway_id = aws_nat_gateway.nat_2.id
   }
 }
-
-# associate route table with private subnet 2
 
 resource "aws_route_table_association" "private_subnet_2_association" {
   subnet_id      = aws_subnet.private_subnet_2.id
@@ -100,8 +86,6 @@ resource "aws_security_group" "web_sg" {
   vpc_id      = aws_vpc.main.id
 }
 
-# allow inbound traffic on port 80
-
 resource "aws_security_group_rule" "web_sg_ingress" {
   type              = "ingress"
   from_port         = 80
@@ -111,17 +95,14 @@ resource "aws_security_group_rule" "web_sg_ingress" {
   security_group_id = aws_security_group.web_sg.id
 }
 
-# allow outbound traffic to the internet
-
 resource "aws_security_group_rule" "web_sg_egress" {
   type              = "egress"
-  from_port         = 443
-  to_port           = 443
+  from_port         = 0
+  to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.web_sg.id
 }
-
 
 resource "aws_subnet" "public_subnet_1" {
   vpc_id     = aws_vpc.main.id
