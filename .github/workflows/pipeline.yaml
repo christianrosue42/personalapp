@@ -80,16 +80,11 @@ jobs:
 
     - name: Terraform Apply
       run: terraform -chdir=terraform apply -auto-approve
-
-    - name: Get Load Balancer DNS Name
-      id: get_lb_dns_name
-      run: |
-          echo "LB_DNS_NAME=$(terraform -chdir=terraform output -raw load_balancer_dns_name)" >> $GITHUB_ENV
     
     - name: Set Environment Variable for React App
       run: |
-          echo "REACT_APP_BACKEND_URL=http://${{ env.LB_DNS_NAME }}" >> .env
-          echo $LB_DNS_NAME
+        echo "REACT_APP_BACKEND_URL=http://$(terraform -chdir=terraform output -raw load_balancer_dns_name)" >> .env
+        echo $REACT_APP_BACKEND_URL
 
     - name: Print .env file
       run: cat .env
