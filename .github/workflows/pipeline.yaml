@@ -34,13 +34,13 @@ jobs:
 
     - name: Build and push client Docker image
       run: |
-        docker build -t $DOCKER_USERNAME/robohub-client:latest ./client
-        docker push $DOCKER_USERNAME/robohub-client:latest
+        docker build -t $DOCKER_USERNAME/robohub-ui:latest ./client
+        docker push $DOCKER_USERNAME/robohub-ui:latest
 
     - name: Build and push server Docker image
       run: |
-        docker build -t $DOCKER_USERNAME/robohub-server:latest ./server
-        docker push $DOCKER_USERNAME/robohub-server:latest
+        docker build -t $DOCKER_USERNAME/robohub-backend:latest ./server
+        docker push $DOCKER_USERNAME/robohub-backend:latest
 
   deploy:
     needs: build-and-push
