@@ -128,6 +128,30 @@ resource "aws_security_group_rule" "web_sg_egress" {
   security_group_id = aws_security_group.web_sg.id
 }
 
+resource "aws_security_group" "app_sg" {
+  name        = "app_sg"
+  description = "Allow inbound traffic on port 3000"
+  vpc_id      = aws_vpc.main.id
+}
+
+resource "aws_security_group_rule" "app_sg_ingress" {
+  type              = "ingress"
+  from_port         = 3000
+  to_port           = 3000
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.app_sg.id
+}
+
+resource "aws_security_group_rule" "app_sg_egress" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.app_sg.id
+}
+
 resource "aws_ecs_cluster" "robohub_cluster" {
   name = "robohub_cluster"
 }
@@ -169,7 +193,7 @@ resource "aws_ecs_service" "frontend_service" {
   network_configuration {
     subnets = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2.id]
     assign_public_ip = true
-    security_groups  = [aws_security_group.web_sg.id]
+    security_groups  = [aws_security_group.web_sg.id, aws_security_group.app_sg.id]
   }
 
   desired_count = 1
@@ -233,7 +257,7 @@ resource "aws_ecs_service" "backend_service" {
   network_configuration {
     subnets = [aws_subnet.private_subnet_1.id, aws_subnet.private_subnet_2.id]
     assign_public_ip = false
-    security_groups  = [aws_security_group.web_sg.id]
+    security_groups  = [aws_security_group.web_sg.id, aws_security_group.app_sg.id]
   }
 
   desired_count = 1
