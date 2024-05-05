@@ -21,7 +21,7 @@ AWS.config.update({
 const docClient = new AWS.DynamoDB.DocumentClient();
 
 // Create a route that handles POST requests to '/user-list'
-router.post('/user-list', (req, res) => {
+router.post('/create-user', (req, res) => {
     // Create a new employee object with the data from the request body
     const newEmployee = req.body;
 
