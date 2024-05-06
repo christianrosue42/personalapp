@@ -82,11 +82,11 @@ jobs:
       run: |
         cd terraform
         terraform apply -auto-approve
-        echo REACT_APP_BACKEND_URL=http://$(terraform output load_balancer_dns_name) >> $GITHUB_ENV
+        echo REACT_APP_BACKEND_URL=http://$(terraform output load_balancer_dns_name) >> ../.env
         cd ..
 
 
     - name: Print .env file
-      run: cat .env
+      run: cat ../.env
 
    
