@@ -69,8 +69,8 @@ jobs:
     - name: Terraform Init
       run:  terraform -chdir=terraform init
 
-    - name: Destroy existing infrastructure (causes downtime)
-      run: terraform -chdir=terraform destroy -auto-approve
+    #- name: Destroy existing infrastructure (causes downtime)
+    #  run: terraform -chdir=terraform destroy -auto-approve
 
     - name: Terraform Validate
       run: terraform -chdir=terraform validate
@@ -82,9 +82,9 @@ jobs:
       run: |
         cd terraform
         terraform apply -auto-approve
-        echo "REACT_APP_BACKEND_URL=http://$(terraform output -raw alb_dns_name)" >> $GITHUB_ENV
+        echo "REACT_APP_BACKEND_URL=http://$(terraform output -raw load_balancer_dns_name)" >> $GITHUB_ENV
         cd ..
-          
+
 
     - name: Print .env file
       run: cat .env
