@@ -53,7 +53,7 @@ jobs:
       run: |
         cd terraform
         terraform apply -auto-approve
-        echo REACT_APP_BACKEND_URL=http://$(terraform output load_balancer_dns_name) >> ../.env
+        echo REACT_APP_BACKEND_URL=http://$(terraform output load_balancer_dns_name) >> .env
         cd ..
 
     - name: Login to Docker Hub
@@ -61,7 +61,7 @@ jobs:
 
     - name: Build and push client Docker image
       run: |
-        docker build --build-arg REACT_APP_BACKEND_URL=$(cat ../.env | grep REACT_APP_BACKEND_URL | cut -d '=' -f2) -t $DOCKER_USERNAME/robohub-ui:latest ./client
+        docker build --build-arg REACT_APP_BACKEND_URL=$(cat .env | grep REACT_APP_BACKEND_URL | cut -d '=' -f2) -t $DOCKER_USERNAME/robohub-ui:latest ./client
         docker push $DOCKER_USERNAME/robohub-ui:latest
 
     - name: Build and push server Docker image
