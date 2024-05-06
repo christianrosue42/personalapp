@@ -71,7 +71,7 @@ jobs:
 
     - name: Force new deployment
       run: |
-        aws ecs update-service --cluster <cluster-name> --service <service-name> --force-new-deployment
+        aws ecs update-service --cluster robohub_cluster --service frontend_service --force-new-deployment
 
     - name: Print .env file
       run: cat .env
