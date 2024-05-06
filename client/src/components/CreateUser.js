@@ -60,12 +60,11 @@ const CreateUser = ({ employees, setEmployees}) => {
         // Use data from employees array to send a POST request to the server
         const employeesData = JSON.parse(localStorage.getItem('employees'));
 
-        // DNS Name hardcoded in .env file
-        // create environment variable for the server URL
+        // DNS Name in .env file
         const serverUrl = process.env.REACT_APP_BACKEND_URL;
-        console.log("Server Url ", serverUrl);
+        console.log("Server Url ", process.env.REACT_APP_BACKEND_URL);
         // Send a POST request to the server
-        fetch(`${serverUrl}/create-user`, {
+        fetch(`${process.env.REACT_APP_BACKEND_URL}/create-user`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
