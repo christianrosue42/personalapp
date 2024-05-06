@@ -58,7 +58,7 @@ const CreateUser = ({ employees, setEmployees}) => {
         localStorage.setItem('employees', JSON.stringify(employees))
     
         // Use data from employees array to send a POST request to the server
-        const employeesData = JSON.parse(localStorage.getItem('employees'));
+        // const employeesData = JSON.parse(localStorage.getItem('employees'));
 
         // DNS Name in .env file
         console.log("Server Url ", process.env.REACT_APP_BACKEND_URL);
@@ -68,7 +68,7 @@ const CreateUser = ({ employees, setEmployees}) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(employeesData),
+            body: JSON.stringify(employees),
         })
         .then(response => response.json())
         .then(data => {
