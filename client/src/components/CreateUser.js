@@ -65,7 +65,7 @@ const CreateUser = ({ employees, setEmployees}) => {
         const serverUrl = process.env.REACT_APP_BACKEND_URL;
         console.log("Server Url ", serverUrl);
         // Send a POST request to the server
-        fetch(`robohub-alb-441340594.eu-central-1.elb.amazonaws.com:3000/create-user`, {
+        fetch(`http://robohub-alb-441340594.eu-central-1.elb.amazonaws.com:3000/create-user`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
