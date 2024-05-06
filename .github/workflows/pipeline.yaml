@@ -15,7 +15,6 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
   AWS_REGION: eu-central-1
-  REACT_APP_BACKEND_URL: http://robohub-alb-925157528.eu-central-1.elb.amazonaws.com
 
 jobs:
   build-and-push:
@@ -80,11 +79,10 @@ jobs:
       run: terraform -chdir=terraform plan -input=false -no-color
 
     - name: Terraform Apply
-      run: terraform -chdir=terraform apply -auto-approve
-    
-    - name: Set Environment Variable for React App
       run: |
-        echo "REACT_APP_BACKEND_URL=http://$(terraform -chdir=terraform output -raw alb_dns_name)" > .env
+        terraform -chdir=terraform apply -auto-approve
+        echo "REACT_APP_BACKEND_URL=http://$(terraform --chdir=terraform output -raw alb_dns_name)" >> $GITHUB_ENV
+          
 
     - name: Print .env file
       run: cat .env
