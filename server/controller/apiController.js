@@ -2,12 +2,16 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const AWS = require('aws-sdk');
+const cors = require('cors'); // import cors for cross-origin resource sharing since frontend and backend are on different ports
 
-// Create a router
+// Create a router object to define routes
 const router = express.Router();
 
 // Use body-parser middleware to parse incoming request bodies
 router.use(bodyParser.json());
+
+// Use cors middleware to enable cross-origin resource sharing
+router.use(cors());
 
 // Configure the AWS SDK
 AWS.config.update({
