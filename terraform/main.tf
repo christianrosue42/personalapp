@@ -231,7 +231,14 @@ resource "aws_ecs_task_definition" "frontend_task" {
           hostPort      = 80
           protocol      = "tcp"
         }
-      ]
+      ],
+
+        environment = [
+            {
+            name  = "REACT_APP_BACKEND_URL"
+            value = "http://${aws_lb.alb.dns_name}:3000"
+            }
+        ]
     }
   ])
 }
