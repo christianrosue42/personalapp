@@ -62,6 +62,7 @@ const CreateUser = ({ employees, setEmployees}) => {
 
         // DNS Name in .env file
         console.log("Server Url ", process.env.REACT_APP_BACKEND_URL);
+        console.log(window.location.hostname);
         // Send a POST request to the server
         fetch(`${process.env.REACT_APP_BACKEND_URL}/create-user`, {
             method: 'POST',
