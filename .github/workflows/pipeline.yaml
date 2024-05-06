@@ -1,6 +1,3 @@
-# building the Docker images and pushing them to Docker Hub. 
-# AWS ECS will then pull these images and run them based on the configuration
-# Terraform will be used to create the necessary infrastructure on AWS
 name: CI/CD Pipeline
 
 on:
@@ -17,33 +14,7 @@ env:
   AWS_REGION: eu-central-1
 
 jobs:
-  build-and-push:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Setup Node.js environment
-      uses: actions/setup-node@v2
-      with:
-        node-version: '20'
-
-    - name: Login to Docker Hub
-      run: echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-
-    - name: Build and push client Docker image
-      run: |
-        docker build -t $DOCKER_USERNAME/robohub-ui:latest ./client
-        docker push $DOCKER_USERNAME/robohub-ui:latest
-
-    - name: Build and push server Docker image
-      run: |
-        docker build -t $DOCKER_USERNAME/robohub-backend:latest ./server
-        docker push $DOCKER_USERNAME/robohub-backend:latest
-
   deploy:
-    needs: build-and-push
     runs-on: ubuntu-latest
 
     steps:
@@ -85,8 +56,22 @@ jobs:
         echo REACT_APP_BACKEND_URL=http://$(terraform output load_balancer_dns_name) >> ../.env
         cd ..
 
+    - name: Login to Docker Hub
+      run: echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+
+    - name: Build and push client Docker image
+      run: |
+        docker build --build-arg REACT_APP_BACKEND_URL=$(cat ../.env | grep REACT_APP_BACKEND_URL | cut -d '=' -f2) -t $DOCKER_USERNAME/robohub-ui:latest ./client
+        docker push $DOCKER_USERNAME/robohub-ui:latest
+
+    - name: Build and push server Docker image
+      run: |
+        docker build -t $DOCKER_USERNAME/robohub-backend:latest ./server
+        docker push $DOCKER_USERNAME/robohub-backend:latest
+
+    - name: Force new deployment
+      run: |
+        aws ecs update-service --cluster <cluster-name> --service <service-name> --force-new-deployment
 
     - name: Print .env file
       run: cat .env
-
-   

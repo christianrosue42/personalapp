@@ -65,7 +65,7 @@ const CreateUser = ({ employees, setEmployees}) => {
         const serverUrl = process.env.REACT_APP_BACKEND_URL;
         console.log("Server Url ", serverUrl);
         // Send a POST request to the server
-        fetch(`${serverUrl}:3000/create-user`, {
+        fetch(`${serverUrl}/create-user`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
