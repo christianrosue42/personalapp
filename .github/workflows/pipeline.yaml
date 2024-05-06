@@ -80,8 +80,10 @@ jobs:
 
     - name: Terraform Apply
       run: |
-        terraform -chdir=terraform apply -auto-approve
-        echo "REACT_APP_BACKEND_URL=http://$(terraform --chdir=terraform output -raw alb_dns_name)" >> $GITHUB_ENV
+        cd terraform
+        terraform apply -auto-approve
+        echo "REACT_APP_BACKEND_URL=http://$(terraform output -raw alb_dns_name)" >> $GITHUB_ENV
+        cd ..
           
 
     - name: Print .env file
