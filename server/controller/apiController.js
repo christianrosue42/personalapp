@@ -33,7 +33,7 @@ if (!process.env.AWS_REGION || !process.env.AWS_ACCESS_KEY_ID || !process.env.AW
 */
 
 // Create a DynamoDB document client object
-const docClient = new AWS.DynamoDB.DocumentClient();
+const docClient = new AWS.DynamoDB.DocumentClient({region: 'eu-central-1'});
 
 // Create a route that handles POST requests to '/user-list'
 router.post('/create-user', (req, res) => {
