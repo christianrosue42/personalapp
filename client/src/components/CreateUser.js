@@ -43,7 +43,7 @@ const handleSubmit = (e) => {
     setEmployees(prevEmployees => [...prevEmployees, newEmployee]);
 
     // Send a POST request to the server
-    fetch(`http://${window.location.hostname}:3000/create-user`, {
+    fetch(`http://${window.location.hostname}/create-user`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
