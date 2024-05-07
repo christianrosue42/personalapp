@@ -4,6 +4,9 @@ const bodyParser = require('body-parser');
 const AWS = require('aws-sdk');
 const cors = require('cors'); // import cors for cross-origin resource sharing since frontend and backend are on different ports
 
+// Load environment variables from the .env file
+require('dotenv').config();
+
 // Create a router object to define routes
 const router = express.Router();
 
