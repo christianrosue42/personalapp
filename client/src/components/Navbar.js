@@ -24,7 +24,7 @@ function CreateNavbar({ onSearchChange  }) {
     return (        
         <Navbar data-bs-theme="dark" className="bg-body-tertiary d-flex justify-content-evenly" fixed="top">
             <Navbar.Brand>
-                <FaRobot /> PerVer
+                <FaRobot /> RoboHub
             </Navbar.Brand>
             <Nav>
                 <Link to="/create-user" className="nav-element">Mitarbeiter hinzufügen</Link>

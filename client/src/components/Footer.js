@@ -25,7 +25,7 @@ function Footer() {
         <div className="bg-dark text-white p-5 footer-container">
             <div className="footer-content">
                 <div>
-                    <h5>PerVer - Roboverwaltung</h5>
+                    <h5>RoboHub - Roboverwaltung</h5>
                     <p>© 2023</p>
                 </div>
 
