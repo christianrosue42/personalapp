@@ -21,6 +21,12 @@ AWS.config.update({
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
 });
 
+// Check if environment variables are set
+if (!process.env.AWS_REGION || !process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
+    console.error('ERROR: Missing one or more environment variables (AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY).');
+    process.exit(1);
+}
+
 // Create a DynamoDB document client
 const docClient = new AWS.DynamoDB.DocumentClient();
 
