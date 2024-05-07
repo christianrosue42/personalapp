@@ -319,6 +319,7 @@ resource "aws_ecs_task_definition" "backend_task" {
   cpu                      = "1024" # 1 vCPU
   memory                   = "2048" # 2 GB
   execution_role_arn       = data.aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn            = data.aws_iam_role.ecs_task_execution_role.arn
 
   container_definitions = jsonencode([
     {
