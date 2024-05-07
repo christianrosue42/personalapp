@@ -48,6 +48,9 @@ router.post('/create-user', (req, res) => {
         Item: newEmployee
     };
 
+      // Log the params object for debugging
+    console.log("Params:", JSON.stringify(params, null, 2));
+
     // Use the DynamoDB document client to add the new employee to the 'employees' table
     docClient.put(params, (err, data) => {
         if (err) {
@@ -59,8 +62,6 @@ router.post('/create-user', (req, res) => {
         }
     });
 
-    // Log the params object for debugging
-    console.log("Params:", JSON.stringify(params, null, 2));
 });
 
 module.exports = router;

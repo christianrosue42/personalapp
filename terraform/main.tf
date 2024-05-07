@@ -241,7 +241,7 @@ resource "aws_ecs_task_definition" "frontend_task" {
 
 # IAM policy to allow the backend service to interact with DynamoDB
 resource "aws_iam_policy" "dynamodb_service_policy" {
-  name        = "backend_service_policy"
+  name        = "dynamodb_service_policy"
   description = "A policy for DynamoDB access"
 
   policy = jsonencode({
