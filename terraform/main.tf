@@ -231,19 +231,44 @@ resource "aws_ecs_task_definition" "frontend_task" {
           hostPort      = 80
           protocol      = "tcp"
         }
-      ],
+      ]     
 
-        environment = [
-            {
-            name  = "REACT_APP_BACKEND_URL"
-            value = "http://${aws_lb.alb.dns_name}:3000"
-            }
-        ]
     }
   ])
 }
 
-# create baclend resources
+# create backend resources
+
+# IAM policy to allow the backend service to interact with DynamoDB
+resource "aws_iam_policy" "dynamodb_service_policy" {
+  name        = "backend_service_policy"
+  description = "A policy for DynamoDB access"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
+          "dynamodb:UpdateItem",
+          "dynamodb:DeleteItem",
+          "dynamodb:Scan",
+          "dynamodb:Query"
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:dynamodb:eu-central-1:031788557013:table/employees"
+      }
+    ]
+  })
+}
+
+# Attach the policy to the role
+resource "aws_iam_role_policy_attachment" "dynamodb_service_policy_attach" {
+  role       = data.aws_iam_role.ecs_task_execution_role.name
+  policy_arn = aws_iam_policy.dynamodb_service_policy.arn
+}
+
 
 resource "aws_lb_target_group" "backend_target_group" {
   name     = "backend-target-group"
