@@ -55,7 +55,7 @@ router.post('/create-user', (req, res) => {
     docClient.put(params, (err, data) => {
         if (err) {
             console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
-            res.status(500).json({ error: 'Could not create new employee' });
+            res.status(500).json({ err: `Could not create new employee: ${err}` });
         } else {
             console.log("Added item:", JSON.stringify(data, null, 2));
             res.status(200).json(newEmployee);
