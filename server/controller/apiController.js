@@ -5,7 +5,7 @@ const AWS = require('aws-sdk');
 const cors = require('cors'); // import cors for cross-origin resource sharing since frontend and backend are on different ports
 
 // Load environment variables from the .env file
-require('dotenv').config();
+//require('dotenv').config();
 
 // Create a router object to define routes
 const router = express.Router();
@@ -32,7 +32,7 @@ if (!process.env.AWS_REGION || !process.env.AWS_ACCESS_KEY_ID || !process.env.AW
 }
 */
 
-// Create a DynamoDB document client
+// Create a DynamoDB document client object
 const docClient = new AWS.DynamoDB.DocumentClient();
 
 // Create a route that handles POST requests to '/user-list'
@@ -40,8 +40,9 @@ router.post('/create-user', (req, res) => {
     // Create a new employee object with the data from the request body
     const newEmployee = req.body;
 
+    // Log the new employee object for debugging
     console.log(newEmployee);
-    console.log(docClient);
+
     // Create a params object for the DynamoDB put method
     const params = {
         TableName: 'employees',
