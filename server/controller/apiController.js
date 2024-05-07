@@ -29,6 +29,8 @@ router.post('/create-user', (req, res) => {
     // Create a new employee object with the data from the request body
     const newEmployee = req.body;
 
+    console.log(newEmployee);
+    console.log(docClient);
     // Create a params object for the DynamoDB put method
     const params = {
         TableName: 'employees',
@@ -45,6 +47,9 @@ router.post('/create-user', (req, res) => {
             res.status(200).json(newEmployee);
         }
     });
+
+    // test the response
+    console.log(res);
 });
 
 module.exports = router;
