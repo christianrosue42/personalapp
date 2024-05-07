@@ -37,48 +37,42 @@ const CreateUser = ({ employees, setEmployees}) => {
     const [geburtstag, setGeburtstag] = useState("");
 
     //function to handle the submit event    
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const newEmployee = {id:Math.floor(100000 + Math.random() * 900000), vorname, nachname, email, abteilung, address, geburtstag};
-        setEmployees(prevEmployees => [...prevEmployees, newEmployee]);
+const handleSubmit = (e) => {
+    e.preventDefault();
+    const newEmployee = {id:Math.floor(100000 + Math.random() * 900000), vorname, nachname, email, abteilung, address, geburtstag};
+    setEmployees(prevEmployees => [...prevEmployees, newEmployee]);
 
-        //empty the input fields
-        setVorname("");
-        setNachname("");
-        setEmail("");
-        setAbteilung("");
-        setAddress("");
-        setGeburtstag("");
-        
-     }
+    // Send a POST request to the server
+    fetch(`http://${window.location.hostname}:3000/create-user`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newEmployee),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data);
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
 
-    //useEffect to save the employees array in the local storage
-    useEffect(() => {
-        // Save the employees array in the local storage
-        localStorage.setItem('employees', JSON.stringify(employees))
+    //empty the input fields
+    setVorname("");
+    setNachname("");
+    setEmail("");
+    setAbteilung("");
+    setAddress("");
+    setGeburtstag("");
     
-        // Use data from employees array to send a POST request to the server
-        // const employeesData = JSON.parse(localStorage.getItem('employees'));
+}
 
-        // DNS Name in .env file
-        console.log("Server Url ", process.env.REACT_APP_BACKEND_URL);
-        console.log(window.location.hostname);
-        // Send a POST request to the server
-        fetch(`http://${window.location.hostname}:3000/create-user`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(employees),
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Success:', data);
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
-    }, [employees]); // Add employees as a dependency
+//useEffect to save the employees array in the local storage
+useEffect(() => {
+    // Save the employees array in the local storage
+    localStorage.setItem('employees', JSON.stringify(employees))
+}, [employees]); // Add employees as a dependency
     
 
 
