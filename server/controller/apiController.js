@@ -17,6 +17,7 @@ router.use(bodyParser.json());
 router.use(cors());
 
 // Configure the AWS SDK
+/* check if setting the AWS credentials is necessary since we created the IAM role with the necessary permissions
 AWS.config.update({
     region: process.env.AWS_REGION,
     // AWS access key and secret key
@@ -29,6 +30,7 @@ if (!process.env.AWS_REGION || !process.env.AWS_ACCESS_KEY_ID || !process.env.AW
     console.error('ERROR: Missing one or more environment variables (AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY).');
     process.exit(1);
 }
+*/
 
 // Create a DynamoDB document client
 const docClient = new AWS.DynamoDB.DocumentClient();
