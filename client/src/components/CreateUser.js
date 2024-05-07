@@ -39,7 +39,7 @@ const CreateUser = ({ employees, setEmployees}) => {
     //function to handle the submit event    
 const handleSubmit = (e) => {
     e.preventDefault();
-    const newEmployee = {id:Math.floor(100000 + Math.random() * 900000), vorname, nachname, email, abteilung, address, geburtstag};
+    const newEmployee = {id:Math.floor(100000 + Math.random() * 900000).toString(), vorname, nachname, email, abteilung, address, geburtstag};
     setEmployees(prevEmployees => [...prevEmployees, newEmployee]);
 
     // Send a POST request to the server
