@@ -6,7 +6,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - refactor-app-architecture
+      - api-handling-and-dynamoDB
 
 env:
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -69,8 +69,8 @@ jobs:
     - name: Terraform Init
       run:  terraform -chdir=terraform init
 
-    #- name: Destroy existing infrastructure (causes downtime)
-    #  run: terraform -chdir=terraform destroy -auto-approve
+    - name: Destroy existing infrastructure (causes downtime)
+      run: terraform -chdir=terraform destroy -auto-approve
 
     - name: Terraform Validate
       run: terraform -chdir=terraform validate
