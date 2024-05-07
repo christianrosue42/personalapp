@@ -59,8 +59,8 @@ router.post('/create-user', (req, res) => {
         }
     });
 
-    // test the response
-    console.log(res);
+    // Log the params object for debugging
+    console.log("Params:", JSON.stringify(params, null, 2));
 });
 
 module.exports = router;

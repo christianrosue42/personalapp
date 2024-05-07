@@ -257,6 +257,8 @@ resource "aws_iam_policy" "dynamodb_service_policy" {
           "dynamodb:Query"
         ]
         Effect   = "Allow"
+        
+        # Replace the ARN with the ARN of your DynamoDB table
         Resource = "arn:aws:dynamodb:eu-central-1:031788557013:table/employees"
       }
     ]
