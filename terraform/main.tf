@@ -5,6 +5,7 @@
 # The output of this configuration is the DNS name of the ALB, which can be used to make requests to the backend service.
 # Note: The container images for the frontend and backend services are hosted on Docker Hub and are publicly accessible. You can replace them with your own images if needed.
 
+# remote backend configuration to store the terraform state in an S3 bucket - needs to be updated with your own bucket name
 terraform {
   backend "s3" {
     bucket = "robohub-terraform-state"
