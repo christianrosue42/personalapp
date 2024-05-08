@@ -18,6 +18,7 @@ provider "aws" {
   region = "eu-central-1"
 }
 
+# set up IAM role for ECS task execution
 data "aws_iam_role" "ecs_task_execution_role" {
   name = "ecsTaskExecutionRole"
 }
@@ -240,7 +241,7 @@ resource "aws_ecs_task_definition" "frontend_task" {
 
 # create backend resources
 
-# IAM policy to allow the backend service to interact with DynamoDB
+# IAM policy to allow the backend service to interact with DynamoDB - add lifecycle block to prevent updates - terraform will ignore changes to this resource once it's created to avoid conflicts
 resource "aws_iam_policy" "dynamodb_service_policy" {
   name        = "dynamodb_service_policy"
   description = "A policy for DynamoDB access"
@@ -264,6 +265,10 @@ resource "aws_iam_policy" "dynamodb_service_policy" {
       }
     ]
   })
+
+  lifecycle {
+      ignore_changes = [all]
+    }
 }
 
 # Attach the policy to the role
