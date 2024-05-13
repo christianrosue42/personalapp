@@ -276,6 +276,7 @@ resource "aws_iam_role_policy_attachment" "dynamodb_service_policy_attach" {
   policy_arn = aws_iam_policy.dynamodb_service_policy.arn
 }
 */
+// create backend resources
 
 resource "aws_lb_target_group" "backend_target_group" {
   name     = "backend-target-group"
