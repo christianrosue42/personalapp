@@ -77,7 +77,7 @@ router.put('/update-user/:id', (req, res) => {
     const params = {
         TableName: 'employees',
         Key: { id: id },
-        UpdateExpression: "set #vorname = :vorname, nachname = :nachname, email = :email, abteilung = :abteilung, address = :address, geburtstag = :geburtstag",
+        UpdateExpression: "set #vorname = :vorname, #nachname = :nachname, #email = :email, #abteilung = :abteilung, #address = :address, #geburtstag = :geburtstag",
         ExpressionAttributeNames: {            
             "#vorname": "vorname",
             "#nachname": "nachname",
