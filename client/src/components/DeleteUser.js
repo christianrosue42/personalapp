@@ -19,7 +19,23 @@ import { BsTrash3 } from "react-icons/bs";
 function DeleteUser({ id, vorname, nachname, onDeleteUser, show, setDeleteShow }) {
     // Call the onDeleteUser function passed as a prop
     const handleDelete = () => {
-        onDeleteUser(id)
+        fetch(`http://${window.location.hostname}:3000/delete-user/${id}`, {
+            method: 'DELETE',
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Success:', data);
+            onDeleteUser(id);
+            setDeleteShow(false);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
         setDeleteShow(false)
        }      
     

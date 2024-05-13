@@ -128,4 +128,27 @@ router.put('/update-user/:id', (req, res) => {
     });
 });
 
+// Create a route that handles DELETE requests to '/delete-user/:id'
+router.delete('/delete-user/:id', (req, res) => {
+    // Get the id from the request parameters
+    const id = req.params.id.toString();
+
+    // Create a params object for the DynamoDB delete method
+    const params = {
+        TableName: 'employees',
+        Key: { id: id },
+    };
+
+    // Use the DynamoDB document client to delete the user from the 'employees' table
+    docClient.delete(params, (err, data) => {
+        if (err) {
+            console.error("Unable to delete item. Error JSON:", JSON.stringify(err, null, 2));
+            res.status(500).json({ err: `Could not delete user: ${err}` });
+        } else {
+            console.log("Deleted item:", JSON.stringify(data, null, 2));
+            res.status(200).json({ message: 'User deleted successfully' });
+        }
+    });
+});
+
 module.exports = router;
