@@ -68,7 +68,7 @@ router.post('/create-user', (req, res) => {
 // Create a route that handles PUT requests to '/update-user/:id'
 router.put('/update-user/:id', (req, res) => {
     // Get the id from the request parameters
-    const id = req.params.id;
+    const id = req.params.id.toString();
 
     // Get the updated user data from the request body
     const updatedUser = req.body;
@@ -76,7 +76,7 @@ router.put('/update-user/:id', (req, res) => {
     // Create a params object for the DynamoDB update method
     const params = {
         TableName: 'employees',
-        Key: { id: id.toString() },
+        Key: { id: id },
         UpdateExpression: "set #vorname = :vorname, nachname = :nachname, email = :email, abteilung = :abteilung, address = :address, geburtstag = :geburtstag",
         ExpressionAttributeNames: {            
             "#vorname": "vorname",
