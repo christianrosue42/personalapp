@@ -65,6 +65,25 @@ router.post('/create-user', (req, res) => {
 
 });
 
+// Create a route that handles GET requests to '/employees'
+router.get('/employees', (req, res) => {
+    // Create a params object for the DynamoDB scan method
+    const params = {
+        TableName: 'employees',
+    };
+
+    // Use the DynamoDB document client to fetch all employees from the 'employees' table
+    docClient.scan(params, (err, data) => {
+        if (err) {
+            console.error("Unable to fetch items. Error JSON:", JSON.stringify(err, null, 2));
+            res.status(500).json({ err: `Could not fetch employees: ${err}` });
+        } else {
+            console.log("Fetched items:", JSON.stringify(data, null, 2));
+            res.status(200).json(data.Items);
+        }
+    });
+});
+
 // Create a route that handles PUT requests to '/update-user/:id'
 router.put('/update-user/:id', (req, res) => {
     // Get the id from the request parameters

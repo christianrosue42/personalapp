@@ -1,8 +1,11 @@
-import React from "react";
+
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
+
+import React, { useEffect, useState } from "react";
+
 
 //import own components
 import UserCard from "./UserCard";
@@ -37,7 +40,15 @@ import UserCard from "./UserCard";
  * @see UserCard.js
  * 
  */
-function UserList({ employees, onDeleteUser, onSave }) {    
+function UserList({ onDeleteUser, onSave }) {    
+    const [employees, setEmployees] = useState([]);
+
+    useEffect(() => {
+        fetch('/api/employees') // replace with your API endpoint
+            .then(response => response.json())
+            .then(data => setEmployees(data))
+            .catch(error => console.error('Error:', error));
+    }, []);
 
     const employeesList = employees.map((user, i) => {
         return (
