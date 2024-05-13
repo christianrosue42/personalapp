@@ -44,7 +44,7 @@ function UserList({ onDeleteUser, onSave }) {
     const [employees, setEmployees] = useState([]);
 
     useEffect(() => {
-        fetch('/api/employees') // replace with your API endpoint
+        fetch(`http://${window.location.hostname}:3000/employees`)
             .then(response => response.json())
             .then(data => setEmployees(data))
             .catch(error => console.error('Error:', error));
