@@ -69,8 +69,8 @@ jobs:
     - name: Terraform Init
       run:  terraform -chdir=terraform init
 
-    #- name: Destroy existing infrastructure (causes downtime! - only for testing purposes - comment out for production)
-    #  run: terraform -chdir=terraform destroy -auto-approve
+    - name: Destroy existing infrastructure (causes downtime! - only for testing purposes - comment out for production)
+      run: terraform -chdir=terraform destroy -auto-approve
 
     - name: Terraform Validate
       run: terraform -chdir=terraform validate
