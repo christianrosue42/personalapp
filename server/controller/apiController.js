@@ -65,4 +65,48 @@ router.post('/create-user', (req, res) => {
 
 });
 
+// Create a route that handles PUT requests to '/update-user/:id'
+router.put('/update-user/:id', (req, res) => {
+    // Get the id from the request parameters
+    const id = req.params.id;
+
+    // Get the updated user data from the request body
+    const updatedUser = req.body;
+
+    // Create a params object for the DynamoDB update method
+    const params = {
+        TableName: 'employees',
+        Key: { id: id },
+        UpdateExpression: "set #vorname = :vorname, nachname = :nachname, email = :email, abteilung = :abteilung, address = :address, geburtstag = :geburtstag",
+        ExpressionAttributeNames: {
+            "#vorname": "vorname",
+            "#nachname": "nachname",
+            "#email": "email",
+            "#abteilung": "abteilung",
+            "#address": "address",
+            "#geburtstag": "geburtstag"
+        },
+        ExpressionAttributeValues: {
+            ":vorname": updatedUser.vorname,
+            ":nachname": updatedUser.nachname,
+            ":email": updatedUser.email,
+            ":abteilung": updatedUser.abteilung,
+            ":address": updatedUser.address,
+            ":geburtstag": updatedUser.geburtstag
+        },
+        ReturnValues: "UPDATED_NEW"
+    };
+
+    // Use the DynamoDB document client to update the user in the 'employees' table
+    docClient.update(params, (err, data) => {
+        if (err) {
+            console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+            res.status(500).json({ err: `Could not update user: ${err}` });
+        } else {
+            console.log("Updated item:", JSON.stringify(data, null, 2));
+            res.status(200).json(updatedUser);
+        }
+    });
+});
+
 module.exports = router;

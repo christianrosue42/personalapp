@@ -28,9 +28,23 @@ function EditUser({ user, onSave, setShow, show }) {
 
   //function to save the changes and close the modal
   const handleSave = () => {
-    onSave(editedUser);
-    setShow(false);
-  };
+    fetch(`http://${window.location.hostname}:3000/update-user/` + editedUser.id, {
+      method: 'PUT', // or 'PATCH'
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(editedUser),
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Success:', data);
+      onSave(editedUser);
+      setShow(false);
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+  };  
 
   //function to handle the changes in the form and set the state
   const handleChange = (e) => {
