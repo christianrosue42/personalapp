@@ -76,10 +76,9 @@ router.put('/update-user/:id', (req, res) => {
     // Create a params object for the DynamoDB update method
     const params = {
         TableName: 'employees',
-        Key: { id: id },
-        UpdateExpression: "set #id = :id, #vorname = :vorname, nachname = :nachname, email = :email, abteilung = :abteilung, address = :address, geburtstag = :geburtstag",
-        ExpressionAttributeNames: {
-            "#id": "id",
+        Key: { id: id.toString() },
+        UpdateExpression: "set #vorname = :vorname, nachname = :nachname, email = :email, abteilung = :abteilung, address = :address, geburtstag = :geburtstag",
+        ExpressionAttributeNames: {            
             "#vorname": "vorname",
             "#nachname": "nachname",
             "#email": "email",
@@ -87,8 +86,7 @@ router.put('/update-user/:id', (req, res) => {
             "#address": "address",
             "#geburtstag": "geburtstag"
         },
-        ExpressionAttributeValues: {
-            ":id": updatedUser.id,
+        ExpressionAttributeValues: {            
             ":vorname": updatedUser.vorname,
             ":nachname": updatedUser.nachname,
             ":email": updatedUser.email,
